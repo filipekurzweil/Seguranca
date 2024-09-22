@@ -14,7 +14,7 @@ config system interface
         set role lan
         set snmp-index 28
         set interface "lacp"
-        set vlanid 201
+        set vlanid 101
     next
 edit "Gerencia_APs"
         set vdom "root"
@@ -26,6 +26,13 @@ edit "Gerencia_APs"
         set vlanid 100
     next
 end
+edit "port3"
+        set vdom "root"
+        set ip 192.168.1.10 255.255.255.0
+        set allowaccess ping
+        set role wan
+        set snmp-index 29
+    next
 config system zone
    edit "inside"                  
       set interface "Gerencia_APs" "wifi"                
@@ -58,15 +65,15 @@ config router static
 end
 config firewall policy
    edit 1
-      set srcintf "port2"
-      set dstintf "port1"
+      set srcintf "inside"
+      set dstintf "port3"
       set srcaddr "all"
       set dstaddr "all"
       set action accept
       set schedule "always"
       set service "ALL"
       set utm-status enable
-      set ips-sensor "custom-ips-profile"  # Aplica o perfil customizado de IPS
+      set ips-sensor "high-security"  # Aplica o perfil customizado de IPS
       set av-profile "default"             # Aplica Antivirus padrão
       set application-list "default"
       set ssl-ssh-profile "certificate-inspection"
