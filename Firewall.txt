@@ -1,0 +1,76 @@
+config system interface
+   edit "lacp"               
+      set vdom "root"              
+      set type aggregate          
+      set member "port1" "port2"  
+      set lacp enable              
+      set mode active             
+      set allowaccess ping https ssh http  
+   next
+ edit "wifi"
+        set vdom "root"
+        set ip 10.1.7.254 255.255.254.0
+        set allowaccess ping https ssh
+        set role lan
+        set snmp-index 28
+        set interface "lacp"
+        set vlanid 201
+    next
+edit "Gerencia_APs"
+        set vdom "root"
+        set ip 10.1.101.254 255.255.254.0
+        set allowaccess ping https ssh
+        set role lan
+        set snmp-index 25
+        set interface "lacp"
+        set vlanid 100
+    next
+end
+config system zone
+   edit "inside"                  
+      set interface "Gerencia_APs" "wifi"                
+   next
+end
+#
+config ips sensor
+ edit "high_security"
+        set comment "Blocks all Critical/High/Medium and some Low severity vulnerabilities"
+        set block-malicious-url enable
+        config entries
+            edit 1
+                set severity medium high critical 
+                set status enable
+                set action block
+            next
+            edit 2
+                set severity low 
+            next
+        end
+    next 
+end
+config router static
+config router static
+   edit 1
+      set dst 0.0.0.0 0.0.0.0      
+      set gateway 192.168.1.254     
+      set device "port3"              
+   next
+end
+config firewall policy
+   edit 1
+      set srcintf "port2"
+      set dstintf "port1"
+      set srcaddr "all"
+      set dstaddr "all"
+      set action accept
+      set schedule "always"
+      set service "ALL"
+      set utm-status enable
+      set ips-sensor "custom-ips-profile"  # Aplica o perfil customizado de IPS
+      set av-profile "default"             # Aplica Antivirus padrão
+      set application-list "default"
+      set ssl-ssh-profile "certificate-inspection"
+   next
+end
+
+
